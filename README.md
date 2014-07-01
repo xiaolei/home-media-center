@@ -5,11 +5,11 @@ This is a web site for sharing the media files to all family members in WLAN wri
 <h2>Dependency packages</h2>
 Execute the following commands to install the dependency packages:
 
-# Install flask
-sudo pip install flask
+Install flask
+`sudo pip install flask`
 
-# Install pyquery
-sudo easy_install pyquery
+Install pyquery
+`sudo easy_install pyquery`
 
 
 <h2>Copyright</h2>
