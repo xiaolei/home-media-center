@@ -1,0 +1,63 @@
+﻿body {
+    margin: 0 auto;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: #000;
+}
+
+.content {
+    width: 940px;
+    max-width: 96%;
+    margin: 30px auto 0 auto;
+}
+
+a {
+    color: #69C;
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #F60;
+    }
+
+h1 {
+    font: 1.5em;
+    line-height: 110%;
+    color: #000;
+}
+
+h1, h2, h3 {
+    color: #000;
+}
+
+h3 {
+    padding: 20px 0;
+    margin: 20px 0 0;
+    font-size: 1.2em;
+}
+
+/* set html5 elements to block */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+div {
+    display: block;
+}
+
+.photo {
+    width: 100%;
+    height: auto;
+}
+
+ol, ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.name{
+    text-align: center;
+    display: block;
+}

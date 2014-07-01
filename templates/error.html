@@ -1,0 +1,10 @@
+﻿{% extends "layout.html" %}
+{% block title %}Error{% endblock %}
+{% block content %}
+        {% if error %}
+<h3>{{error}}</h3>
+        {% else %}
+<h3>Error!</h3>
+        {% endif %}
+<p><a href="{{ url_for('view.home') }}">Back home</a></p>
+{% endblock %}

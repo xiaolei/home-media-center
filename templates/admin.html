@@ -1,0 +1,14 @@
+﻿{% extends "layout.html" %}
+{% block title %}HMC admin console{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<p>Welcome HMC admin console!</p>
+<ul>
+    <li><a href="{{url_for('view.home')}}">Go to home page</a></li>
+    <li><a href="{{url_for('api.init_db')}}">Create database</a></li>
+    <li><a href="{{url_for('api.rescan')}}">Rescan all movie files</a></li>
+    <li><a href="{{url_for('api.all_movies')}}">Get all movies</a></li>
+</ul>
+{% endblock %}

@@ -1,0 +1,105 @@
+﻿/*
+    Refer to: http://webdesignerwall.com/tutorials/responsive-column-layouts
+*/
+.grid2, .grid3, .grid4 {
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+/************************************************************************************
+COLUMN
+*************************************************************************************/
+.col {
+    background: #eee;
+    float: left;
+    margin-left: 3.2%;
+    margin-bottom: 30px;
+}
+
+.fullwidth .col {
+    float: none;
+    margin-left: 0;
+}
+/* grid4 col */
+.grid4 .col {
+    width: 22.6%;
+}
+/* grid3 col */
+.grid3 .col {
+    width: 31.2%;
+}
+/* grid2 col */
+.grid2 .col {
+    width: 48.4%;
+}
+    /* clear col */
+    .grid4 .col:nth-of-type(4n+1),
+    .grid3 .col:nth-of-type(3n+1),
+    .grid2 .col:nth-of-type(2n+1) {
+        margin-left: 0;
+        clear: left;
+    }
+
+/************************************************************************************
+MEDIA QUERIES
+*************************************************************************************/
+/* reset cols to 3-column */
+@media screen and (max-width: 740px) {
+    /* grid4 */
+    .grid4 .col {
+        width: 31.2%;
+    }
+
+        .grid4 .col:nth-of-type(4n+1) {
+            margin-left: 3.2%;
+            clear: none;
+        }
+
+        .grid4 .col:nth-of-type(3n+1) {
+            margin-left: 0;
+            clear: left;
+        }
+}
+
+/* reset cols to 2-column */
+@media screen and (max-width: 600px) {
+    /* grid4 */
+    .grid4 .col {
+        width: 48.4%;
+    }
+
+        .grid4 .col:nth-of-type(3n+1) {
+            margin-left: 3.2%;
+            clear: none;
+        }
+
+        .grid4 .col:nth-of-type(2n+1) {
+            margin-left: 0;
+            clear: left;
+        }
+
+    /* grid3 */
+    .grid3 .col {
+        width: 48.4%;
+    }
+
+        .grid3 .col:nth-of-type(3n+1) {
+            margin-left: 3.2%;
+            clear: none;
+        }
+
+        .grid3 .col:nth-of-type(2n+1) {
+            margin-left: 0;
+            clear: left;
+        }
+}
+
+/* reset cols to fullwidth */
+@media screen and (max-width: 400px) {
+    /* grid4 */
+    .col {
+        width: 100% !important;
+        margin-left: 0 !important;
+        clear: none !important;
+    }
+}
