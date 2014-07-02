@@ -9,17 +9,10 @@ HMC.Common.GetQueryStringValue = function getParameterByName(name, defaultValue)
     return results == null ? defaultValue : decodeURIComponent(results[1].replace(/\+/g, " "));
 };
 
-HMC.Home.Handler = function (options) {
-    this.Options = {
-        KeywordsInputSelector: '#q'
-    };
-    $.extend(this.Options, options);
-    $($.proxy(this.init, this));
-}
+HMC.Common.EnableAdminSwitcher = function enableAdminSwitcher(selector) {
+    $(selector).animate({ width: 'toggle' });
+};
 
-HMC.Home.Handler.prototype = {
-    init: function () {
-        var q = HMC.Common.GetQueryStringValue('q');
-        $(this.Options.KeywordsInputSelector).val(q);
-    }
+HMC.Common.ActiveMenuItem = function activeMenuItem(selector) {
+    $(selector).toggleClass('selected');
 };

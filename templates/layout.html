@@ -7,10 +7,29 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hmc.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='grid.css') }}">
+    <script type="text/javascript" src="{{url_for('static', filename='jquery-1.11.1.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='hmc.js')}}"></script>
     <title>{% block title %}{% endblock %} - HMC</title>
     {% endblock %}
 </head>
 <body>
-    <div class="content">{% block content %}{% endblock %}</div>
+    <div class="content">
+        <div id="menu">
+            <span class="menu-header">HMC</span>
+            <ul>
+                <li id="home"><a href="{{url_for('view.home')}}">Home</a></li>
+                <li id="admin"><a href="{{url_for('view.admin')}}">Admin</a></li>
+            </ul>
+        </div>
+        <div>
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    <div id="footer">
+        <span>Copyright &#169; by <a id="admin-switcher" href="#">Lei Xiao</a>. All Rights Reserved.</span>
+    </div>
+    <script type="text/javascript">
+        $(function () { $('#admin-switcher').click(function () { HMC.Common.EnableAdminSwitcher('#menu'); }); });
+    </script>
 </body>
 </html>

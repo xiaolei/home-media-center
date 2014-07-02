@@ -18,4 +18,8 @@ class Development(DefaultConfig):
     DEBUG = True
 
 class Testing(DefaultConfig):
+    SAMBA_SHARE_PATH = 'smb://test/hmc'
+    DATABASE_URI = os.path.join(os.path.dirname(__file__), 'hmc-test.sqlite')
+    MOVIES_PATH = os.path.join(os.path.dirname(__file__), 'test-assets/movies')
+    DEFAULT_MOVIE_FILE_EXTENSIONS = ('.txt', '.mkv', '.rmvb', '.rm', '.mp4', '.avi')
     TESTING = True

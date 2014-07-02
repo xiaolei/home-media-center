@@ -1,21 +1,15 @@
 from flask import Blueprint, g, request, render_template, abort, jsonify, current_app
 from db import create_db, execute_sql
 from services import MovieManager, AssetManager
-from os.path import basename
-import os.path
 
 api = Blueprint('api', __name__, template_folder='templates')
 
 @api.route('/rescan', methods = ['GET', 'POST'])
 def rescan():
-    sql = 'delete from movies;'
     movies_path = current_app.config['MOVIES_PATH']
     movie_file_exts = current_app.config['DEFAULT_MOVIE_FILE_EXTENSIONS']
-    execute_sql(sql)
-
-    files = AssetManager().get_files(movies_path, movie_file_exts)
-    for fileinfo in files:
-        execute_sql('insert into movies(name, url, file_name) values(?, ?, ?);', [basename(fileinfo['filename']), fileinfo['url'], fileinfo['filename']])
+    smb_share_path = current_app.config['SAMBA_SHARE_PATH']
+    MovieManager().rescan(movies_path, smb_share_path, movie_file_exts)
     return jsonify(error='', data='ok')
 
 @api.route('/create_db', methods = ['GET', 'POST'])

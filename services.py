@@ -1,13 +1,13 @@
-import os, fnmatch
+import os, os.path, fnmatch
 from flask import current_app
-from db import query_db
+from db import query_db, execute_sql
+from os.path import basename
 
 DEFAULT_PAGE_SIZE = 4
 
 class AssetManager(object):
-    def get_files(self, path, extensions=()):
+    def get_files(self, path, smb_share_path, extensions=()):
         result = []
-        smb_share_path = current_app.config['SAMBA_SHARE_PATH']
         length = len(path)
         if smb_share_path[-1:] != os.sep:
             smb_share_path = smb_share_path + os.sep
@@ -28,6 +28,13 @@ class AssetManager(object):
         
 
 class MovieManager(object):
+    def rescan(self, movies_path, smb_share_path, movie_file_exts):
+        sql = 'delete from movies;'
+        execute_sql(sql)
+        files = AssetManager().get_files(movies_path, smb_share_path, movie_file_exts)
+        for fileinfo in files:
+            execute_sql('insert into movies(name, url, file_name) values(?, ?, ?);', [basename(fileinfo['filename']), fileinfo['url'], fileinfo['filename']])
+
     def get_all_movies(self, page_size=DEFAULT_PAGE_SIZE, page_number=0):
         if page_size <= 0:
             page_size = DEFAULT_PAGE_SIZE

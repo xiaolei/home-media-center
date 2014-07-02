@@ -53,24 +53,28 @@ class HtmlParserBase(object):
     def load(self, url):
         self.engine = PyQuery(url=url)
         return self
+    
+    def parse(self):
+        return dict()
 
     def select(self, selector):
         return self.engine(selector)
 
-    def selectTitle(self):
-        return ''
-
 class DoubanHtmlParser(HtmlParserBase):
-    def selectTitle(self):
-        return self.select('title').text()
+    def parse(self):
+        result = dict()
+        result['poster_url'] = self.engine('.nbgnbg img').attr('src')
+        result['name'] = self.engine('#content h1 span:first').text()
+        result['imdb_url'] = self.engine('#info a:last').attr('href')
+        return result
 
 class ImdbHtmlParser(HtmlParserBase):
-    def selectTitle(self):
-        return self.select('title').text()
+    def parse(self):
+        return dict()
 
 
 if __name__ == '__main__':
-    url = 'https://www.douban.com'
+    url = 'http://movie.douban.com/subject/7054604'
     factory = HtmlParserFactory()
     parser = factory.get_parser(url)
-    print(parser.load(url).selectTitle())
+    print(parser.load(url).parse())
