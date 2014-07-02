@@ -7,3 +7,4 @@ dist
 eggs
 parts
 src/*.egg-info
+hmc-test.sqlite
