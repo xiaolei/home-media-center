@@ -2,4 +2,3 @@
 --index-url https://pypi.python.org/simple/
 
 Flask==0.10.1
-pyquery==1.2.8
