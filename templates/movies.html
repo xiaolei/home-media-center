@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+  {{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='movies.css') }}">
+<script type="text/javascript" src="{{url_for('static', filename='hmc.home.js')}}"></script>
+{% endblock %}
+{% block content %}
+<div>
+    <p>Welcome!</p>
+    <form action="{{url_for('movies.home')}}">
+        <label for="q">Search: </label>
+        <input type="text" id="q" name="q" />
+        <input type="submit" id="search" value="Search" />
+    </form>
+    <div class="grid4">
+        {% for movie in movies.result %}
+        <div class="col">
+            <ul class="movie-info">
+                <li>
+                    <a href="{{movie.url}}">
+                        <img class="photo" src="{{movie.poster_url if movie.poster_url else ''}}" alt="{{movie.name}}" />
+                    </a>
+                </li>
+                <li>
+                    <a class="name" href="{{ movie.url }}">{{movie.name}}{% if movie.year %} ({{movie.year}}){% else %}{% endif %}</a>
+                </li>
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    {% if movies.page_number == 0 and movies.has_more == False %}
+    {% else %}
+    <div class="pagination">
+        {% if movies.page_number > 0 %}
+        <a href="{{url_for('movies.home', q=movies.query, p=movies.page_number-1)}}">Previous page</a>
+        {% endif %}
+        <span>{{movies.page_number + 1}}</span>
+        {% if movies.has_more %}
+        <a href="{{url_for('movies.home', q=movies.query, p=movies.page_number+1)}}">Next page</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+<script type="text/javascript">
+    $(function () { new HMC.Home.Handler(); HMC.Common.ActiveMenuItem('#movies'); });
+</script>
+{% endblock %}

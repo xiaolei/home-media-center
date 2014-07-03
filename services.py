@@ -1,7 +1,8 @@
-import os, os.path, fnmatch
+import os, os.path, fnmatch, json
+from os.path import basename
 from flask import current_app
 from db import query_db, execute_sql
-from os.path import basename
+from providers import MovieInfoProvider
 
 DEFAULT_PAGE_SIZE = 4
 
@@ -16,13 +17,22 @@ class AssetManager(object):
                 if extensions and not (filename.lower().endswith(extensions)):
                     continue
                 abs_file_name = os.path.join(root, filename)
+                (r, ext) = os.path.splitext(abs_file_name)
+                # Try to load the json format movie information from the file with the same file name but extension is .json
+                json_file_name = r + '.json'
+                json_file_info = dict()
+                if os.path.isfile(json_file_name):
+                    with open(json_file_name) as f:
+                        json_text = f.read()
+                        if json_text:
+                            json_file_info = json.loads(json_text)
                 filename_with_path = abs_file_name.replace(path, '')
                 if filename_with_path[0] == os.sep:
                     filename_with_path = smb_share_path + filename_with_path[1:]
                 else:
                     filename_with_path = smb_share_path + filename_with_path
                 filename_with_path = filename_with_path.replace('\\', '/')
-                fileinfo = dict(url=filename_with_path, filename=abs_file_name)
+                fileinfo = dict(url=filename_with_path, filename=abs_file_name, info=json_file_info)
                 result.append(fileinfo)
         return result
         
@@ -32,8 +42,17 @@ class MovieManager(object):
         sql = 'delete from movies;'
         execute_sql(sql)
         files = AssetManager().get_files(movies_path, smb_share_path, movie_file_exts)
-        for fileinfo in files:
-            execute_sql('insert into movies(name, url, file_name) values(?, ?, ?);', [basename(fileinfo['filename']), fileinfo['url'], fileinfo['filename']])
+        for file in files:
+            movie = dict()
+            if file['info'].has_key('imdb_id'):
+                imdb_id = file['info']['imdb_id']
+                movie = MovieInfoProvider().get_by_imdb_id(imdb_id)
+            movie['url'] = file['url']
+            movie['file_name'] = file['filename']
+            if not movie:
+                continue
+            sql = 'insert into movies({0}) values({1});'.format(', '.join(movie.keys()), ('?,'*len(movie.values()))[:-1])
+            execute_sql(sql, movie.values())
 
     def get_all_movies(self, page_size=DEFAULT_PAGE_SIZE, page_number=0):
         if page_size <= 0:

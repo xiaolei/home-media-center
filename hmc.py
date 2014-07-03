@@ -3,10 +3,12 @@ from flask import Flask, g, Blueprint, render_template, jsonify
 from core import cached, templated, request_wants_json
 from api_module import api
 from view_module import view
+from view_movie_module import movie_view
 
 app = Flask(__name__)
 app.config.from_object('config.Development')
 app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(movie_view, url_prefix='/movies')
 app.register_blueprint(view)
 
 @app.errorhandler(404)

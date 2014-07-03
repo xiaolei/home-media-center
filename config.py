@@ -1,4 +1,5 @@
 import os
+from common import get_local_ip
 
 class DefaultConfig(object):
     DEBUG = True
@@ -7,19 +8,24 @@ class DefaultConfig(object):
     SESSION_COOKIE_SECURE = True
     DATABASE_URI = os.path.join(os.path.dirname(__file__), 'hmc.sqlite')
 	# smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
-    SAMBA_SHARE_PATH = 'smb://192.168.1.104/hmc'
-    MOVIES_PATH = 'D:/v-lexia/labs/python-projects/hmc'
-    DEFAULT_MOVIE_FILE_EXTENSIONS = ('.html', '.mkv', '.rmvb', '.rm', '.mp4', '.avi')
+    SAMBA_SHARE_PATH = 'smb://{0}/hmc'.format(get_local_ip())
+    MOVIES_PATH = os.path.join(os.path.dirname(__file__), 'test-assets/movies')
+    DEFAULT_MOVIE_FILE_EXTENSIONS = ('.mkv', '.rmvb', '.rm', '.mp4', '.avi')
 	
 class Production(DefaultConfig):
+    DEBUG = False
+    TESTING = False
     DATABASE_URI = os.path.join(os.path.dirname(__file__), 'hmc.sqlite')
+    MOVIES_PATH = os.path.join(os.path.dirname(__file__), 'test-assets/movies')
+    DEFAULT_MOVIE_FILE_EXTENSIONS = ('.mkv', '.rmvb', '.rm', '.mp4', '.avi')
 
 class Development(DefaultConfig):
     DEBUG = True
+    MOVIES_PATH = os.path.join(os.path.dirname(__file__), 'test-assets/movies')
+    DEFAULT_MOVIE_FILE_EXTENSIONS = ('.txt', '.mkv', '.rmvb', '.rm', '.mp4', '.avi')
 
 class Testing(DefaultConfig):
-    SAMBA_SHARE_PATH = 'smb://test/hmc'
+    TESTING = True
     DATABASE_URI = os.path.join(os.path.dirname(__file__), 'hmc-test.sqlite')
     MOVIES_PATH = os.path.join(os.path.dirname(__file__), 'test-assets/movies')
     DEFAULT_MOVIE_FILE_EXTENSIONS = ('.txt', '.mkv', '.rmvb', '.rm', '.mp4', '.avi')
-    TESTING = True

@@ -67,11 +67,12 @@ ol, ul {
     left: 0px;
     bottom: 0px;
     width: 100%;
-    background: #eee;
+    background: #f2f2f2;
     text-align: center;
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 0.9em;
+    border-top: 1px solid #e4e4e4;
 }
 
 #menu {
