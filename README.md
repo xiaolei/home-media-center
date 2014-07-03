@@ -1,5 +1,7 @@
 Home Media Center
 =================
+.. image:: https://travis-ci.org/xiaolei/home-media-center.svg?branch=master
+   :target: https://travis-ci.org/xiaolei/home-media-center
 This is a web site for sharing the media files to all family members in WLAN written in Python base on flask.
 
 <h2>Dependency</h2>
