@@ -4,12 +4,14 @@ Home Media Center
    :target: https://travis-ci.org/xiaolei/home-media-center
 This is a web site for sharing the media files to all family members in WLAN written in Python base on flask.
 
-<h2>Dependency</h2>
+Dependency
+==========
 Run the following command to install the dependency packages:
 
-`$ pip install -r requirements.txt`
+    pip install -r requirements.txt
 
-<h2>Copyright</h2>
+Copyright
+=========
 
     Copyright 2014 Lei Xiao. All rights reserved.
 
