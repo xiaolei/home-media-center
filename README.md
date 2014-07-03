@@ -2,15 +2,10 @@ Home Media Center
 =================
 This is a web site for sharing the media files to all family members in WLAN written in Python base on flask.
 
-<h2>Dependency packages</h2>
-Execute the following commands to install the dependency packages:
+<h2>Dependency</h2>
+Run the following command to install the dependency packages:
 
-Install flask
-`sudo pip install flask`
-
-Install pyquery
-`sudo easy_install pyquery`
-
+`$ pip install -r requirements.txt`
 
 <h2>Copyright</h2>
 
