@@ -1,5 +1,4 @@
 import os, os.path, fnmatch, json, urllib
-from os.path import basename
 from flask import current_app
 from db import query_db, execute_sql
 from providers import MovieInfoProvider
@@ -46,7 +45,7 @@ class MovieManager(object):
             movie = dict()
             filename = file['filename']
             url = file['url']
-            movie['name'] = basename(filename).split('.')[0]
+            movie['name'] = os.path.basename(filename)
             (r, ext) = os.path.splitext(filename)
             poster_filename = r + '.jpg'
             if file['info'].has_key('imdb_id'):
