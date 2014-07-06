@@ -11,7 +11,7 @@ class AssetManager(object):
         result = []
         length = len(path)
         if movie_share_path[-1:] != '/':
-            movie_share_path = smb_share_path + '/'
+            movie_share_path = movie_share_path + '/'
         for root, dirnames, filenames in os.walk(path):
             for filename in filenames:
                 if extensions and not (filename.lower().endswith(extensions)):

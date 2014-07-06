@@ -73,19 +73,21 @@ class OmdbApi(MovieInfoProviderBase):
         result['name'] = raw_result['Title']
         result['storylines'] = raw_result['Plot']
         result['imdb_id'] = raw_result['imdbID']
-        result['imdb_votes'] = int(raw_result['imdbVotes'].replace(',',''))
         result['poster_url'] = raw_result['Poster']
         result['runtime'] = raw_result['Runtime'].split(' ')[0]
         result['awards'] = raw_result['Awards']
         result['genre'] = raw_result['Genre']
         result['actors'] = raw_result['Actors']
         result['director'] = raw_result['Director']
-        result['imdb_rating'] = float(raw_result['imdbRating'])
-        result['imdb_metascore'] = float(raw_result['Metascore'])
         result['writers'] = raw_result['Writer']
         result['country'] = raw_result['Country']
         result['language'] = raw_result['Language']
         result['year'] = raw_result['Year']
+        try:
+            result['imdb_votes'] = int(raw_result['imdbVotes'].replace(',',''))
+            result['imdb_rating'] = float(raw_result['imdbRating'])
+            result['imdb_metascore'] = float(raw_result['Metascore'])
+        except: pass
         return result
 
 
