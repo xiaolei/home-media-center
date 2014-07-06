@@ -1,4 +1,4 @@
 import sys
-import app as application
+from hmc import app as application
 
-sys.path.append('/home/pi/web/home-media-center') from hmc
+sys.path.append('/home/pi/web/home-media-center')
