@@ -10,6 +10,7 @@ def get_db():
     if db is None:
         db = g._database = sqlite3.connect(current_app.config['DATABASE_URI'])
         db.row_factory = make_dicts
+        db.text_factory = lambda x: unicode(x, 'utf-8', 'ignore')
     return db
 
 def create_db():

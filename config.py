@@ -8,7 +8,7 @@ class DefaultConfig(object):
     SESSION_COOKIE_SECURE = True
     DATABASE_URI = os.path.join(os.path.dirname(__file__), 'hmc.sqlite')
 	# smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
-    SAMBA_SHARE_PATH = 'smb://{0}/hmc/movie'.format(get_local_ip())
+    MOVIE_SHARE_PATH = '/share/movie'
     MOVIES_PATH = os.path.join(os.path.dirname(__file__), 'test-assets/movies')
     DEFAULT_MOVIE_FILE_EXTENSIONS = ('.mkv', '.rmvb', '.rm', '.mp4', '.avi')
 	

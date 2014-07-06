@@ -7,11 +7,11 @@ from providers import MovieInfoProvider
 DEFAULT_PAGE_SIZE = 4
 
 class AssetManager(object):
-    def get_files(self, path, smb_share_path, extensions=()):
+    def get_files(self, path, movie_share_path, extensions=()):
         result = []
         length = len(path)
-        if smb_share_path[-1:] != os.sep:
-            smb_share_path = smb_share_path + os.sep
+        if movie_share_path[-1:] != '/':
+            movie_share_path = smb_share_path + '/'
         for root, dirnames, filenames in os.walk(path):
             for filename in filenames:
                 if extensions and not (filename.lower().endswith(extensions)):
@@ -28,9 +28,9 @@ class AssetManager(object):
                             json_file_info = json.loads(json_text)
                 filename_with_path = abs_file_name.replace(path, '')
                 if filename_with_path[0] == os.sep:
-                    filename_with_path = smb_share_path + filename_with_path[1:]
+                    filename_with_path = movie_share_path + filename_with_path[1:]
                 else:
-                    filename_with_path = smb_share_path + filename_with_path
+                    filename_with_path = movie_share_path + filename_with_path
                 filename_with_path = filename_with_path.replace('\\', '/')
                 fileinfo = dict(url=filename_with_path, filename=abs_file_name, info=json_file_info)
                 result.append(fileinfo)
@@ -38,14 +38,15 @@ class AssetManager(object):
         
 
 class MovieManager(object):
-    def rescan(self, movies_path, smb_share_path, movie_file_exts):
+    def rescan(self, movies_path, movie_share_path, movie_file_exts):
         sql = 'delete from movies;'
         execute_sql(sql)
-        files = AssetManager().get_files(movies_path, smb_share_path, movie_file_exts)
+        files = AssetManager().get_files(movies_path, movie_share_path, movie_file_exts)
         for file in files:
             movie = dict()
             filename = file['filename']
             url = file['url']
+            movie['name'] = basename(filename).split('.')[0]
             (r, ext) = os.path.splitext(filename)
             poster_filename = r + '.jpg'
             if file['info'].has_key('imdb_id'):

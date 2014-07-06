@@ -1,0 +1,29 @@
+<VirtualHost *:80>
+
+    ServerName 127.0.0.1
+
+    DocumentRoot /home/pi/web/home-media-center
+
+    WSGIDaemonProcess hmc user=pi group=www-data threads=5 home=/home/pi/web/home-media-center
+ 
+   WSGIScriptAlias / /home/pi/web/home-media-center/hmc.wsgi
+ 
+   <Directory /home/pi/web/home-media-center>
+ 
+        WSGIProcessGroup hmc
+ 
+        WSGIApplicationGroup %{GLOBAL}
+ 
+        WSGIScriptReloading On
+ 
+        Order deny,allow
+ 
+        Allow from all
+ 
+   </Directory>
+    Alias /share/movie /media/elements_/public/movie
+    <Directory /media/elements_/public/movie>
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>
