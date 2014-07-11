@@ -10,7 +10,7 @@ class AssetManager(object):
         for dirname in os.listdir(path):
             new_dirname = dirname
             for rule in replace_rules:
-                if len(rule) == 2 and rule in dirname:
+                if len(rule) == 2 and rule[0] in dirname:
                     new_dirname = new_dirname.replace(rule[0], rule[1])
             if new_dirname != dirname:
                 os.rename(os.path.join(path, dirname), os.path.join(path, new_dirname))
