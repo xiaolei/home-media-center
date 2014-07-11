@@ -12,9 +12,6 @@ class HmcTestCase(unittest.TestCase):
     def tearDown(self):
         pass;
 
-    def test_refine_folder_names(self):
-        AssertManager().refine_folder_names('F:/Software/test a')
-
     def test_api_movies(self):
         response = self.app.get('/api/movies')
         assert response.status_code, 200
