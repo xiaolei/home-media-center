@@ -5,7 +5,7 @@ from providers import MovieInfoProvider
 DEFAULT_PAGE_SIZE = 4
 
 class AssetManager(object):
-    def refine_folder_names(self, path, replace_rules:[[' ', '_'], ['[', ''], [']', ''], ['(', ''], [')', '']]):
+    def refine_folder_names(self, path, replace_rules=[[' ', '_'], ['[', ''], [']', ''], ['(', ''], [')', '']]):
         if not path or not replace_rules or not os.path.isdir(path): pass
         for dirname in os.listdir(path):
             new_dirname = dirname
