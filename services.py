@@ -49,7 +49,7 @@ class MovieManager(object):
     def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True):
         sql = 'delete from movies;'
         execute_sql(sql)
-        assetManager = AssertManager();
+        assetManager = AssetManager();
         if refine_folder_names:
             assetManager.refine_folder_names(movies_path)
         files = assetManager.get_files(movies_path, movie_share_path, movie_file_exts)
