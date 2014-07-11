@@ -56,8 +56,7 @@ class MovieManager(object):
                     if poster_url:
                         try:
                             urllib.urlretrieve(poster_url, poster_filename)
-                        except ex as Exception:
-                            print(str(ex))
+                        except: pass
                     
             movie['url'] = url
             movie['file_name'] = filename
