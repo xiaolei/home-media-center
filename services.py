@@ -4,7 +4,17 @@ from providers import MovieInfoProvider
 
 DEFAULT_PAGE_SIZE = 4
 
-class AssetManager(object):     
+class AssetManager(object):
+    def refine_folder_names(self, path, replace_rules:[[' ', '_'], ['[', ''], [']', ''], ['(', ''], [')', '']]):
+        if not path or not replace_rules or not os.path.isdir(path): pass
+        for dirname in os.listdir(path):
+            new_dirname = dirname
+            for rule in replace_rules:
+                if len(rule) == 2 and rule in dirname:
+                    new_dirname = new_dirname.replace(rule[0], rule[1])
+            if new_dirname != dirname:
+                os.rename(os.path.join(path, dirname), os.path.join(path, new_dirname))
+                
     def get_files(self, path, movie_share_path, extensions=()):
         result = []
         length = len(path)
@@ -36,10 +46,13 @@ class AssetManager(object):
         
 
 class MovieManager(object):
-    def rescan(self, movies_path, movie_share_path, movie_file_exts):
+    def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True):
         sql = 'delete from movies;'
         execute_sql(sql)
-        files = AssetManager().get_files(movies_path, movie_share_path, movie_file_exts)
+        assetManager = AssertManager();
+        if refine_folder_names:
+            assetManager.refine_folder_names(movies_path)
+        files = assetManager.get_files(movies_path, movie_share_path, movie_file_exts)
         for file in files:
             movie = dict()
             filename = file['filename']
