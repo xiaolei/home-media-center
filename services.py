@@ -1,11 +1,10 @@
 import os, os.path, fnmatch, json, urllib
-from flask import current_app
 from db import query_db, execute_sql
 from providers import MovieInfoProvider
 
 DEFAULT_PAGE_SIZE = 4
 
-class AssetManager(object):
+class AssetManager(object):     
     def get_files(self, path, movie_share_path, extensions=()):
         result = []
         length = len(path)
@@ -54,7 +53,11 @@ class MovieManager(object):
                 # Download poster image to local with the same name as the movie file name.
                 if not os.path.isfile(poster_filename) and movie.has_key('poster_url'):
                     poster_url = movie['poster_url']
-                    urllib.urlretrieve(poster_url, poster_filename)
+                    if poster_url:
+                        try:
+                            urllib.urlretrieve(poster_url, poster_filename)
+                        except ex as Exception:
+                            print(str(ex))
                     
             movie['url'] = url
             movie['file_name'] = filename

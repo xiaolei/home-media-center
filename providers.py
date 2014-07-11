@@ -67,26 +67,29 @@ class MovieInfoProviderBase(object):
     def transform(self, raw_result=dict()):
         return raw_result
 
+    def get_value(self, raw_result, key, default_value=''):
+        return raw_result[key] if raw_result and key and raw_result.has_key(key) else default_value
+
 class OmdbApi(MovieInfoProviderBase):
     def transform(self, raw_result=dict()):
         result = dict()
-        result['name'] = raw_result['Title']
-        result['storylines'] = raw_result['Plot']
-        result['imdb_id'] = raw_result['imdbID']
-        result['poster_url'] = raw_result['Poster']
-        result['runtime'] = raw_result['Runtime'].split(' ')[0]
-        result['awards'] = raw_result['Awards']
-        result['genre'] = raw_result['Genre']
-        result['actors'] = raw_result['Actors']
-        result['director'] = raw_result['Director']
-        result['writers'] = raw_result['Writer']
-        result['country'] = raw_result['Country']
-        result['language'] = raw_result['Language']
-        result['year'] = raw_result['Year']
+        result['name'] = self.get_value(raw_result, 'Title')
+        result['storylines'] = self.get_value(raw_result, 'Plot')
+        result['imdb_id'] = self.get_value(raw_result, 'imdbID')
+        result['poster_url'] = self.get_value(raw_result, 'Poster')
+        result['runtime'] = self.get_value(raw_result, 'Runtime').split(' ')[0]
+        result['awards'] = self.get_value(raw_result, 'Awards')
+        result['genre'] = self.get_value(raw_result, 'Genre')
+        result['actors'] = self.get_value(raw_result, 'Actors')
+        result['director'] = self.get_value(raw_result, 'Director')
+        result['writers'] = self.get_value(raw_result, 'Writer')
+        result['country'] = self.get_value(raw_result, 'Country')
+        result['language'] = self.get_value(raw_result, 'Language')
+        result['year'] = self.get_value(raw_result, 'Year')
         try:
-            result['imdb_votes'] = int(raw_result['imdbVotes'].replace(',',''))
-            result['imdb_rating'] = float(raw_result['imdbRating'])
-            result['imdb_metascore'] = float(raw_result['Metascore'])
+            result['imdb_votes'] = int(self.get_value(raw_result, 'imdbVotes').replace(',',''))
+            result['imdb_rating'] = float(self.get_value(raw_result, 'imdbRating'))
+            result['imdb_metascore'] = float(self.get_value(raw_result, 'Metascore'))
         except: pass
         return result
 
