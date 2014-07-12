@@ -53,7 +53,7 @@ class AssetManager(object):
 
 class MovieManager(object):
     def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True, force_rescan_all = False):
-        if not skip_if_notscan_file_exists:
+        if force_rescan_all:
             sql = 'delete from movies;'
             execute_sql(sql)
         assetManager = AssetManager();
