@@ -29,7 +29,7 @@ class AssetManager(object):
 
                 # Ignor the files if there is a file which name is '.notscan' in the parent folder 
                 notscan_file_name = os.path.join(os.path.dirname(abs_file_name), FILE_NAME_NOT_SCAN)
-                if os.path.isfile(notscan_file_name):
+                if skip_if_notscan_file_exists and os.path.isfile(notscan_file_name):
                     continue
                 (name, ext) = os.path.splitext(abs_file_name)
                 # Try to load the json format movie information from the file with the same file name but extension is .json
@@ -52,14 +52,14 @@ class AssetManager(object):
         
 
 class MovieManager(object):
-    def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True, skip_if_notscan_file_exists = True):
+    def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True, force_rescan_all = False):
         if not skip_if_notscan_file_exists:
             sql = 'delete from movies;'
             execute_sql(sql)
         assetManager = AssetManager();
         if refine_folder_names:
             assetManager.refine_folder_names(movies_path)
-        files = assetManager.get_files(movies_path, movie_share_path, movie_file_exts, skip_if_notscan_file_exists)
+        files = assetManager.get_files(movies_path, movie_share_path, movie_file_exts, False if force_rescan_all else True)
         for file in files:
             movie = dict()
             filename = file['filename']
