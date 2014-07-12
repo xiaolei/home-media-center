@@ -52,13 +52,14 @@ class AssetManager(object):
         
 
 class MovieManager(object):
-    def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True, force_rescan_all_files = False):
-        sql = 'delete from movies;'
-        execute_sql(sql)
+    def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True, skip_if_notscan_file_exists = True):
+        if not skip_if_notscan_file_exists:
+            sql = 'delete from movies;'
+            execute_sql(sql)
         assetManager = AssetManager();
         if refine_folder_names:
             assetManager.refine_folder_names(movies_path)
-        files = assetManager.get_files(movies_path, movie_share_path, movie_file_exts)
+        files = assetManager.get_files(movies_path, movie_share_path, movie_file_exts, skip_if_notscan_file_exists)
         for file in files:
             movie = dict()
             filename = file['filename']
@@ -101,7 +102,7 @@ class MovieManager(object):
     def get_total_count(self):
         sql = u"select count(_id) as mcount from movies where is_active = 'true'"
         result = query_db(query=sql, one=True)
-        return int(result) if result else 0
+        return int(result['mcount']) if result else 0
 
     def search(self, keywords, page_size=DEFAULT_PAGE_SIZE, page_number=0):
         if page_size <= 0:

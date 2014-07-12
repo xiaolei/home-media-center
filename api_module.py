@@ -6,10 +6,11 @@ api = Blueprint('api', __name__, template_folder='templates')
 
 @api.route('/rescan', methods = ['GET', 'POST'])
 def rescan():
+    mode = request.args.get('mode')
     movies_path = current_app.config['MOVIES_PATH']
     movie_file_exts = current_app.config['DEFAULT_MOVIE_FILE_EXTENSIONS']
     movie_share_path = current_app.config['MOVIE_SHARE_PATH']
-    MovieManager().rescan(movies_path, movie_share_path, movie_file_exts)
+    MovieManager().rescan(movies_path, movie_share_path, movie_file_exts, mode!='force')
     return jsonify(error='', data='ok')
 
 @api.route('/create_db', methods = ['GET', 'POST'])
