@@ -17,8 +17,9 @@ def home():
     except: pass
     if not page_number:
         page_number = 0
+    movieManager = MovieManager()
     if not keywords:
-        movies = MovieManager().get_all_movies(page_number=page_number)
+        movies = movieManager.get_all_movies(page_number=page_number)
     else:
-        movies = MovieManager().search(keywords=keywords, page_number=page_number)
-    return dict(movies=movies)
+        movies = movieManager.search(keywords=keywords, page_number=page_number)
+    return dict(movies=movies, total_count=movieManager.get_total_count())

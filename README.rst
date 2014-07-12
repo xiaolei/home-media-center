@@ -10,6 +10,11 @@ Run the following command to install the dependency packages:
 
     pip install -r requirements.txt
 
+Usage
+=====
+The first step when you use HMC for the first time is rescan all of you media files. Go to "/admin" page and click rescan link then waiting for the action completed.
+Create a file named ".notscan" if you don't what HMC to scan all the files in the folder.
+
 Copyright
 =========
 

@@ -2,7 +2,8 @@ import os, os.path, fnmatch, json, urllib
 from db import query_db, execute_sql
 from providers import MovieInfoProvider
 
-DEFAULT_PAGE_SIZE = 4
+DEFAULT_PAGE_SIZE = 16
+FILE_NAME_NOT_SCAN = '.notscan'
 
 class AssetManager(object):
     def refine_folder_names(self, path, replace_rules=[[' ', '_'], ['[', ''], [']', ''], ['(', ''], [')', '']]):
@@ -15,7 +16,7 @@ class AssetManager(object):
             if new_dirname != dirname:
                 os.rename(os.path.join(path, dirname), os.path.join(path, new_dirname))
                 
-    def get_files(self, path, movie_share_path, extensions=()):
+    def get_files(self, path, movie_share_path, extensions=(), skip_if_notscan_file_exists = True):
         result = []
         length = len(path)
         if movie_share_path[-1:] != '/':
@@ -25,9 +26,14 @@ class AssetManager(object):
                 if extensions and not (filename.lower().endswith(extensions)):
                     continue
                 abs_file_name = os.path.join(root, filename)
-                (r, ext) = os.path.splitext(abs_file_name)
+
+                # Ignor the files if there is a file which name is '.notscan' in the parent folder 
+                notscan_file_name = os.path.join(os.path.dirname(abs_file_name), FILE_NAME_NOT_SCAN)
+                if os.path.isfile(notscan_file_name):
+                    continue
+                (name, ext) = os.path.splitext(abs_file_name)
                 # Try to load the json format movie information from the file with the same file name but extension is .json
-                json_file_name = r + '.json'
+                json_file_name = name + '.json'
                 json_file_info = dict()
                 if os.path.isfile(json_file_name):
                     with open(json_file_name) as f:
@@ -46,7 +52,7 @@ class AssetManager(object):
         
 
 class MovieManager(object):
-    def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True):
+    def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True, force_rescan_all_files = False):
         sql = 'delete from movies;'
         execute_sql(sql)
         assetManager = AssetManager();
@@ -78,6 +84,10 @@ class MovieManager(object):
                 continue
             sql = u'insert into movies({0}) values({1});'.format(', '.join(movie.keys()), ('?,'*len(movie.values()))[:-1])
             execute_sql(sql, movie.values())
+            # Create a '.notscan' file to indicates that this file already be scanned. Next time, it will be ignored
+            notscan_file_name = os.path.join(os.path.dirname(filename), FILE_NAME_NOT_SCAN)
+            if not os.path.isfile(notscan_file_name):
+                with open(notscan_file_name, 'w'): pass
 
     def get_all_movies(self, page_size=DEFAULT_PAGE_SIZE, page_number=0):
         if page_size <= 0:
@@ -87,6 +97,11 @@ class MovieManager(object):
         sql = u"select * from movies where is_active = 'true' order by ratings desc limit {0} offset {1}".format(page_size, page_number*page_size)
         result = query_db(sql)
         return self.wrap_results(result, page_number, page_size, '')
+
+    def get_total_count(self):
+        sql = u"select count(_id) as mcount from movies where is_active = 'true'"
+        result = query_db(query=sql, one=True)
+        return int(result) if result else 0
 
     def search(self, keywords, page_size=DEFAULT_PAGE_SIZE, page_number=0):
         if page_size <= 0:

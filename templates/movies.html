@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 <div>
-    <p>Welcome!</p>
+    <p>Welcome to the movie center. There are {{total_count}} movies here. Input the query keywords to search the movie you want to watch.</p>
     <form action="{{url_for('movies.home')}}">
         <label for="q">Search: </label>
         <input type="text" id="q" name="q" />
