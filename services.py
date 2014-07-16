@@ -56,6 +56,8 @@ class MovieManager(object):
         if force_rescan_all:
             sql = 'delete from movies;'
             execute_sql(sql)
+        else:
+            self.remove_all_missing_files_in_db()
         assetManager = AssetManager();
         if refine_folder_names:
             assetManager.refine_folder_names(movies_path)
@@ -98,6 +100,26 @@ class MovieManager(object):
         sql = u"select * from movies where is_active = 'true' order by ratings desc limit {0} offset {1}".format(page_size, page_number*page_size)
         result = query_db(sql)
         return self.wrap_results(result, page_number, page_size, '')
+
+    def remove_all_missing_files_in_db(self):
+        page_number = 0
+        removed_count = 0
+        query = self.get_all_movies(20, page_number)
+        sql = 'delete from movies where _id = ?'
+        while True:
+            if not query or not query['result']:
+                return removed_count
+            movies = query['result']
+            for movie in movies:
+                file_name = movie['file_name']
+                file_id = movie['_id']
+                if not os.path.isfile(file_name):
+                    execute_sql(sql, [file_id])
+                    removed_count = removed_count + 1
+            page_number = page_number + 1
+            query = self.get_all_movies(20, page_number)
+            if not query or not query['result'] or not query['has_more']:
+                return removed_count
 
     def get_total_count(self):
         sql = u"select count(_id) as mcount from movies where is_active = 'true'"
