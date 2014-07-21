@@ -2,7 +2,7 @@
     margin: 0 auto;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     color: #000;
 }
 
@@ -60,6 +60,8 @@ ol, ul {
 .name {
     text-align: center;
     display: block;
+    font-size: 1em;
+    font-weight: bold;
 }
 
 #footer {
@@ -75,6 +77,25 @@ ol, ul {
 
 .pagination {
     margin-top: 30px;
+}
+
+.ratings {
+    text-align: center;
+    font-size: 0.8em;
+    color: #999;
+}
+
+    .ratings .best-rating {
+        color: #e2e2e2;
+    }
+
+    .ratings .ratings-value {
+        font-weight: bold;
+    }
+
+.search-bar {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 #menu {
@@ -132,3 +153,55 @@ ol, ul {
         #menu .menu-header:focus {
             color: #999;
         }
+
+.stars {
+    background: url("/static/stars.gif") no-repeat;
+    height: 11px;
+    width: 100%;
+    background-position: 0 -111px;
+    display: inline-block;
+}
+
+.stars-100 {
+    background-position: 0 0px;
+}
+
+.stars-90 {
+    background-position: 0 -11px;
+}
+
+.stars-80 {
+    background-position: 0 -22px;
+}
+
+.stars-70 {
+    background-position: 0 -33px;
+}
+
+.stars-60 {
+    background-position: 0 -44px;
+}
+
+.stars-50 {
+    background-position: 0 -55px;
+}
+
+.stars-40 {
+    background-position: 0 -66px;
+}
+
+.stars-30 {
+    background-position: 0 -77px;
+}
+
+.stars-20 {
+    background-position: 0 -88px;
+}
+
+.stars-10 {
+    background-position: 0 -99px;
+}
+
+.stars-0 {
+    background-position: 0 -111px;
+}

@@ -8,11 +8,13 @@
 {% block content %}
 <div>
     <p>Welcome to the movie center. There are {{total_count}} movies here. Input the query keywords to search the movie you want to watch.</p>
-    <form action="{{url_for('movies.home')}}">
-        <label for="q">Search: </label>
-        <input type="text" id="q" name="q" />
-        <input type="submit" id="search" value="Search" />
-    </form>
+    <div class="search-bar">
+        <form action="{{url_for('movies.home')}}">
+            <label for="q">Search: </label>
+            <input type="text" id="q" name="q" />
+            <input type="submit" id="search" value="Search" />
+        </form>
+    </div>
     <div class="grid4">
         {% for movie in movies.result %}
         <div class="col">
@@ -24,6 +26,9 @@
                 </li>
                 <li>
                     <a class="name" href="{{ movie.url }}">{{movie.name}}{% if movie.year %} ({{movie.year}}){% else %}{% endif %}</a>
+                </li>
+                <li>
+                    <div class="ratings">Ratings: <span class="ratings-value">{{movie.imdb_rating}}</span><span class="best-rating">/10</span> from {{'{:,d}'.format(movie.imdb_votes)}} users</div>
                 </li>
             </ul>
         </div>
