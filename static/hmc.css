@@ -155,7 +155,7 @@ ol, ul {
         }
 
 .stars {
-    background: url("/static/stars.gif") no-repeat;
+    background: url("/static/images/stars.gif") no-repeat;
     height: 11px;
     width: 100%;
     background-position: 0 -111px;
