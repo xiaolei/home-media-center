@@ -1,5 +1,7 @@
-import sqlite3, logging
+import sqlite3, logging, os
 from flask import g, current_app
+
+DB_UPGRADE_FILE_NAME_PATTERN = 'upgrade_db_from_version{0}to{1}.sql'
 
 def make_dicts(cursor, row):
     return dict((cursor.description[idx][0], value)
@@ -18,9 +20,35 @@ def create_db():
         db = get_db()
         sql = ''
         with current_app.open_resource('database.sql', mode='r') as f:
-            sql = f.read();
+            sql = f.read()
             db.cursor().executescript(sql)
         db.commit()
+
+def upgrade_db():
+    current_version = get_db_version()
+    new_version = current_version + 1
+    filename = os.path.join(current_app.root_path, DB_UPGRADE_FILE_NAME_PATTERN.format(current_version, new_version))
+    if os.path.isfile(filename):
+        with current_app.open_resource(filename, mode='r') as f:
+            sql = f.read()
+        if sql:
+            execute_sql(sql)
+            if current_version == 0:
+                execute_sql('insert into settings(key, value) values(?, ?)', ['version', new_version])
+            else:
+                execute_sql('update settings set value=? where key=?', [new_version, 'version'])
+            return new_version
+    return current_version
+
+def get_db_version():
+    db = get_db()
+    sql = "select * from sqlite_master where tbl_name = 'settings' and type = 'table'"
+    result = query_db(sql)
+    if len(result) > 0:
+        sql = "select value from settings where key = 'version'"
+        result = query_db(query=sql, one=True)
+        return int(result) if result else 0
+    return 0
 
 def execute_sql(sql, args=()):
     db = get_db()
@@ -32,3 +60,4 @@ def query_db(query, args=(), one=False):
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
+

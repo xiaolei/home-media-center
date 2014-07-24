@@ -2,7 +2,7 @@ import os, unittest, json
 from flask import Flask, jsonify
 import hmc, api_module
 from services import MovieManager
-from db import execute_sql
+from db import execute_sql, upgrade_db, get_db_version
 
 flask_app = Flask(__name__)
 flask_app.config.from_object('config.Testing')
@@ -35,6 +35,18 @@ class HmcTestCase(unittest.TestCase):
             actual_count = movieManager.remove_all_missing_files_in_db()
             assert actual_count, expected_count
             print('OK - remove_all_missing_files_in_db')
+
+    def test_get_db_version(self):
+        with flask_app.test_request_context():
+            actual_result = get_db_version()
+            assert actual_result >= 0, True
+            print('OK - test_get_db_version')
+
+    def test_upgrade_db(self):
+        with flask_app.test_request_context():
+            current_version = get_db_version()
+            actual_version = upgrade_db()
+            assert actual_version >= current_version, True
 
 if __name__ == '__main__':
     unittest.main()
