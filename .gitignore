@@ -7,6 +7,5 @@ dist
 eggs
 parts
 src/*.egg-info
-hmc-test.sqlite
 test-assets/movies/*.jpg
 .notscan
