@@ -2,7 +2,7 @@ import os, unittest, json
 from flask import Flask, jsonify
 import hmc, api_module
 from services import MovieManager
-from db import execute_sql, upgrade_db, get_db_version
+from db import execute_sql, upgrade_db, get_db_version, create_db
 
 flask_app = Flask(__name__)
 flask_app.config.from_object('config.Testing')
@@ -14,10 +14,14 @@ class HmcTestCase(unittest.TestCase):
         self.app.get('/api/create_db')
         self.app.get('/api/rescan')
         current_app = self.app
-        print('OK - setUp')
 
     def tearDown(self):
         pass;
+
+    def test_create_db(self):
+        with flask_app.test_request_context():
+            create_db()
+            print('OK - test_create_db')
 
     def test_api_movies(self):
         response = self.app.get('/api/movies')
@@ -34,7 +38,7 @@ class HmcTestCase(unittest.TestCase):
                 execute_sql('insert into movies(file_name, name) values(?, ?)', ['.filenotfound' + str(i), 'test' + str(i)])
             actual_count = movieManager.remove_all_missing_files_in_db()
             assert actual_count, expected_count
-            print('OK - remove_all_missing_files_in_db')
+            print('OK - test_remove_all_missing_files_in_db')
 
     def test_get_db_version(self):
         with flask_app.test_request_context():
