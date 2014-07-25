@@ -53,6 +53,7 @@ class AssetManager(object):
 
 class MovieManager(object):
     def rescan(self, movies_path, movie_share_path, movie_file_exts, refine_folder_names = True, force_rescan_all = False):
+        result = 0
         if force_rescan_all:
             sql = 'delete from movies;'
             execute_sql(sql)
@@ -69,28 +70,41 @@ class MovieManager(object):
             movie['name'] = os.path.basename(filename)
             (r, ext) = os.path.splitext(filename)
             poster_filename = r + '.jpg'
+            
             if file['info'].has_key('imdb_id'):
                 imdb_id = file['info']['imdb_id']
                 movie = MovieInfoProvider().get_by_imdb_id(imdb_id)
+                if not movie:
+                    continue
                 # Download poster image to local with the same name as the movie file name.
-                if not os.path.isfile(poster_filename) and movie.has_key('poster_url'):
-                    poster_url = movie['poster_url']
-                    if poster_url:
-                        try:
-                            urllib.urlretrieve(poster_url, poster_filename)
-                        except: pass
+                if movie.has_key('poster_url'):
+                    self.download_poster_file(movie['poster_url'], poster_filename)
                     
             movie['url'] = url
             movie['file_name'] = filename
             movie['poster_url'] = url[:-4] + '.jpg'
-            if not movie:
-                continue
+
             sql = u'insert into movies({0}) values({1});'.format(', '.join(movie.keys()), ('?,'*len(movie.values()))[:-1])
             execute_sql(sql, movie.values())
+            result = result + 1
+            
             # Create a '.notscan' file to indicates that this file already be scanned. Next time, it will be ignored
-            notscan_file_name = os.path.join(os.path.dirname(filename), FILE_NAME_NOT_SCAN)
-            if not os.path.isfile(notscan_file_name):
-                with open(notscan_file_name, 'w'): pass
+            self.create_notscan_file(os.path.dirname(filename))
+        return result
+
+    def download_poster_file(self, poster_url, save_to_filename):
+        if not poster_url or not save_to_filename or os.path.isfile(save_to_filename):
+            pass
+        try:
+            urllib.urlretrieve(poster_url, save_to_filename)
+        except Exception as ex:
+            print(str(ex))
+
+    def create_notscan_file(self, folder_path):
+        if not folder_path: pass
+        notscan_file_name = os.path.join(folder_path, FILE_NAME_NOT_SCAN)
+        if not os.path.isfile(notscan_file_name):
+            with open(notscan_file_name, 'w'): pass
 
     def get_all_movies(self, page_size=DEFAULT_PAGE_SIZE, page_number=0):
         if page_size <= 0:
@@ -102,13 +116,12 @@ class MovieManager(object):
         return self.wrap_results(result, page_number, page_size, '')
 
     def remove_all_missing_files_in_db(self):
-        page_number = 0
         removed_count = 0
-        query = self.get_all_movies(20, page_number)
         sql = 'delete from movies where _id = ?'
         while True:
-            if not query or not query['result']:
-                return removed_count
+            query = self.get_all_movies(20, 0)
+            if len(query['result']) == 0:
+                break
             movies = query['result']
             for movie in movies:
                 file_name = movie['file_name']
@@ -116,10 +129,7 @@ class MovieManager(object):
                 if not os.path.isfile(file_name):
                     execute_sql(sql, [file_id])
                     removed_count = removed_count + 1
-            page_number = page_number + 1
-            query = self.get_all_movies(20, page_number)
-            if not query or not query['result'] or not query['has_more']:
-                return removed_count
+        return removed_count
 
     def get_total_count(self):
         sql = u"select count(_id) as mcount from movies where is_active = 'true'"

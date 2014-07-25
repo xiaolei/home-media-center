@@ -21,10 +21,11 @@ def create_db():
         sql = ''
         with current_app.open_resource('database.sql', mode='r') as f:
             sql = f.read()
-            db.cursor().executescript(sql)
+        db.cursor().executescript(sql)
         db.commit()
 
 def upgrade_db():
+    db = get_db()
     current_version = get_db_version()
     new_version = current_version + 1
     filename = os.path.join(current_app.root_path, DB_UPGRADE_FILE_NAME_PATTERN.format(current_version, new_version))
@@ -32,22 +33,29 @@ def upgrade_db():
         with current_app.open_resource(filename, mode='r') as f:
             sql = f.read()
         if sql:
-            execute_sql(sql)
+            db.cursor().executescript(sql)
             if current_version == 0:
-                execute_sql('insert into settings(key, value) values(?, ?)', ['version', new_version])
+                db.execute('insert into settings(key, value) values(?, ?)', ['version', new_version])
             else:
-                execute_sql('update settings set value=? where key=?', [new_version, 'version'])
+                db.execute('update settings set value=? where key=?', [new_version, 'version'])
+            db.commit()
             return new_version
     return current_version
+
+def has_db_update():
+    current_version = get_db_version()
+    new_version = current_version + 1
+    filename = os.path.join(current_app.root_path, DB_UPGRADE_FILE_NAME_PATTERN.format(current_version, new_version))
+    return os.path.isfile(filename)
 
 def get_db_version():
     db = get_db()
     sql = "select * from sqlite_master where tbl_name = 'settings' and type = 'table'"
-    result = query_db(sql)
-    if len(result) > 0:
+    result = query_db(sql, one=True)
+    if result:
         sql = "select value from settings where key = 'version'"
         result = query_db(query=sql, one=True)
-        return int(result) if result else 0
+        return int(result['value']) if result else 0
     return 0
 
 def execute_sql(sql, args=()):

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import sys
 from urllib2 import Request, urlopen, URLError
@@ -73,6 +73,9 @@ class MovieInfoProviderBase(object):
 class OmdbApi(MovieInfoProviderBase):
     def transform(self, raw_result=dict()):
         result = dict()
+        if raw_result.has_key('Error'):
+            print(raw_result['Error'])
+            return result
         result['name'] = self.get_value(raw_result, 'Title')
         result['storylines'] = self.get_value(raw_result, 'Plot')
         result['imdb_id'] = self.get_value(raw_result, 'imdbID')
@@ -86,11 +89,13 @@ class OmdbApi(MovieInfoProviderBase):
         result['country'] = self.get_value(raw_result, 'Country')
         result['language'] = self.get_value(raw_result, 'Language')
         result['year'] = self.get_value(raw_result, 'Year')
+        result['type'] = self.get_value(raw_result, 'Type')
         try:
             result['imdb_votes'] = int(self.get_value(raw_result, 'imdbVotes').replace(',',''))
             result['imdb_rating'] = float(self.get_value(raw_result, 'imdbRating'))
             result['imdb_metascore'] = float(self.get_value(raw_result, 'Metascore'))
-        except: pass
+        except Exception as ex:
+            print(str(ex))
         return result
 
 

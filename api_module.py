@@ -1,5 +1,5 @@
 from flask import Blueprint, g, request, render_template, abort, jsonify, current_app
-from db import create_db, execute_sql
+from db import create_db, execute_sql, upgrade_db, get_db_version, has_db_update
 from services import MovieManager, AssetManager
 
 api = Blueprint('api', __name__, template_folder='templates')
@@ -15,11 +15,11 @@ def rescan():
 
 @api.route('/create_db', methods = ['GET', 'POST'])
 def init_db():
-    result = dict(error='', data='ok')
+    result = dict(error='', result='ok')
     create_db()
     return jsonify(result)
 
-@api.route('/movies')
+@api.route('/movies', methods = ['GET', 'POST'])
 def all_movies():
     keywords = request.args.get('q')
     page_number = 0
@@ -32,4 +32,19 @@ def all_movies():
     else:
         result = MovieManager().search(keywords, page_number=page_number)
     result['error'] = ''
+    return jsonify(result)
+
+@api.route('/get_db_version', methods = ['GET', 'POST'])
+def get_database_version():
+    result = dict(error='', result='Current database version is ' + str(get_db_version()))
+    return jsonify(result)
+
+@api.route('/upgrade_db', methods = ['GET', 'POST'])
+def upgrade_database():
+    result = dict(error='', result='No db update.')
+    if not has_db_update():
+        return jsonify(result)
+    old_version = get_db_version()
+    new_version = upgrade_db()
+    result['result'] = 'Successfully upgraded database from version {0} to {1}.'.format(old_version, new_version)
     return jsonify(result)
