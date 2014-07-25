@@ -1,12 +1,9 @@
-import os, unittest, json
+import os, unittest, json, sqlite3
 from flask import Flask, jsonify, current_app
 import hmc, api_module
 from services import MovieManager
 from db import execute_sql, upgrade_db, get_db_version, create_db
 
-db_filename = hmc.app.config['DATABASE_URI']
-if os.path.isfile(db_filename):
-    os.remove(db_filename)
 flask_app = Flask(__name__)
 flask_app.config.from_object('config.Testing')
 
