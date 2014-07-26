@@ -28,7 +28,7 @@ def upgrade_db():
     db = get_db()
     current_version = get_db_version()
     new_version = current_version + 1
-    filename = os.path.join(current_app.root_path, DB_UPGRADE_FILE_NAME_PATTERN.format(current_version, new_version))
+    filename = os.path.join(current_app.root_path, 'upgrade_db', DB_UPGRADE_FILE_NAME_PATTERN.format(current_version, new_version))
     if os.path.isfile(filename):
         with current_app.open_resource(filename, mode='r') as f:
             sql = f.read()
@@ -45,7 +45,7 @@ def upgrade_db():
 def has_db_update():
     current_version = get_db_version()
     new_version = current_version + 1
-    filename = os.path.join(current_app.root_path, DB_UPGRADE_FILE_NAME_PATTERN.format(current_version, new_version))
+    filename = os.path.join(current_app.root_path, 'upgrade_db', DB_UPGRADE_FILE_NAME_PATTERN.format(current_version, new_version))
     return os.path.isfile(filename)
 
 def get_db_version():
