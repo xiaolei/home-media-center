@@ -48,3 +48,15 @@ def upgrade_database():
     new_version = upgrade_db()
     result['result'] = 'Successfully upgraded database from version {0} to {1}.'.format(old_version, new_version)
     return jsonify(result)
+
+@api.route('/remove_missing_movies', methods = ['GET', 'POST'])
+def remove_missing_movies():
+    count = MovieManager().remove_all_missing_files_in_db()
+    result = dict(error='', result='Successfully removed {0} files.'.format(count))
+    return jsonify(result)
+
+@api.route('/remove_duplicate_movies', methods = ['GET', 'POST'])
+def remove_duplicate_movies():
+    count = MovieManager().remove_duplicate_movies()
+    result = dict(error='', result='Successfully removed {0} duplicate movies.'.format(count))
+    return jsonify(result)

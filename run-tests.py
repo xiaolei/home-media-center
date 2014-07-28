@@ -60,5 +60,14 @@ class HmcTestCase(unittest.TestCase):
             actual_version = upgrade_db()
             assert actual_version >= current_version
 
+    def test_remove_duplicate_movies(self):
+        with flask_app.test_request_context():
+            expected_count = 1
+            for i in range(2):
+                execute_sql('insert into movies(name, imdb_id) values(?, ?)', ['duplicate_movie_name_' + str(i), 'tt9999999'])
+            actual_count = MovieManager().remove_duplicate_movies()
+            assert actual_count == expected_count, 'actual: {0}, expected: {1}'.format(actual_count, expected_count)
+            print('OK - test_remove_duplicate_movies')
+            
 if __name__ == '__main__':
     unittest.main()

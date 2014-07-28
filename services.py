@@ -57,8 +57,7 @@ class MovieManager(object):
         if force_rescan_all:
             sql = 'delete from movies;'
             execute_sql(sql)
-        else:
-            self.remove_all_missing_files_in_db()
+
         assetManager = AssetManager();
         if refine_folder_names:
             assetManager.refine_folder_names(movies_path)
@@ -106,20 +105,21 @@ class MovieManager(object):
         if not os.path.isfile(notscan_file_name):
             with open(notscan_file_name, 'w'): pass
 
-    def get_all_movies(self, page_size=DEFAULT_PAGE_SIZE, page_number=0):
+    def get_all_movies(self, page_size=DEFAULT_PAGE_SIZE, page_number=0, include_not_active=False):
         if page_size <= 0:
             page_size = DEFAULT_PAGE_SIZE
         if page_number < 0:
             page_number = 0
-        sql = u"select * from movies where is_active = 'true' order by ratings desc limit {0} offset {1}".format(page_size, page_number*page_size)
+        sql = u"select * from movies" + (" where is_active = 'true' " if not include_not_active else '') + " order by ratings desc limit {0} offset {1}".format(page_size, page_number*page_size)
         result = query_db(sql)
         return self.wrap_results(result, page_number, page_size, '')
 
     def remove_all_missing_files_in_db(self):
         removed_count = 0
-        sql = 'delete from movies where _id = ?'
+        page_number = 0
+        sql = "update movies set is_active = 'false' where _id = ?"
         while True:
-            query = self.get_all_movies(20, 0)
+            query = self.get_all_movies(20, page_number, True)
             if len(query['result']) == 0:
                 break
             movies = query['result']
@@ -129,7 +129,21 @@ class MovieManager(object):
                 if not os.path.isfile(file_name):
                     execute_sql(sql, [file_id])
                     removed_count = removed_count + 1
+            page_number = page_number + 1
+        if removed_count > 0:
+            execute_sql("delete from movies where is_active = 'false'")
         return removed_count
+
+    def remove_duplicate_movies(self):
+        count = 0
+        sql = 'select _id from movies group by imdb_id having count(imdb_id) > 1'
+        query_result = query_db(sql)
+        if query_result:
+            for row in query_result:
+                movie_id = row['_id']
+                execute_sql('delete from movies where _id = ?', [movie_id])
+                count = count + 1
+        return count
 
     def get_total_count(self):
         sql = u"select count(_id) as mcount from movies where is_active = 'true'"
