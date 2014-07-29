@@ -135,15 +135,8 @@ class MovieManager(object):
         return removed_count
 
     def remove_duplicate_movies(self):
-        count = 0
-        sql = 'select _id from movies group by imdb_id having count(imdb_id) > 1'
-        query_result = query_db(sql)
-        if query_result:
-            for row in query_result:
-                movie_id = row['_id']
-                execute_sql('delete from movies where _id = ?', [movie_id])
-                count = count + 1
-        return count
+        sql = 'delete from movies where _id in (select _id from movies  group by imdb_id having count(imdb_id) > 1)'
+        execute_sql(sql)
 
     def get_total_count(self):
         sql = u"select count(_id) as mcount from movies where is_active = 'true'"

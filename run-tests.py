@@ -2,7 +2,7 @@ import os, unittest, json, sqlite3
 from flask import Flask, jsonify, current_app
 import hmc, api_module
 from services import MovieManager
-from db import execute_sql, upgrade_db, get_db_version, create_db
+from db import execute_sql, upgrade_db, get_db_version, create_db, query_db
 
 flask_app = Flask(__name__)
 flask_app.config.from_object('config.Testing')
@@ -62,10 +62,13 @@ class HmcTestCase(unittest.TestCase):
 
     def test_remove_duplicate_movies(self):
         with flask_app.test_request_context():
+            sql = 'select count(_id) as fcount from movies'
             expected_count = 1
             for i in range(2):
                 execute_sql('insert into movies(name, imdb_id) values(?, ?)', ['duplicate_movie_name_' + str(i), 'tt9999999'])
-            actual_count = MovieManager().remove_duplicate_movies()
+            count = query_db(sql, one=True)['fcount']
+            MovieManager().remove_duplicate_movies()
+            actual_count = count - query_db(sql, one=True)['fcount']
             assert actual_count == expected_count, 'actual: {0}, expected: {1}'.format(actual_count, expected_count)
             print('OK - test_remove_duplicate_movies')
             
