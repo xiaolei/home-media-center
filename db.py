@@ -34,10 +34,7 @@ def upgrade_db():
             sql = f.read()
         if sql:
             db.cursor().executescript(sql)
-            if current_version == 0:
-                db.execute('insert into settings(key, value) values(?, ?)', ['version', new_version])
-            else:
-                db.execute('update settings set value=? where key=?', [new_version, 'version'])
+            db.execute('update settings set value=? where key=?', [new_version, 'version'])
             db.commit()
             return new_version
     return current_version
