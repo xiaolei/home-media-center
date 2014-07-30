@@ -1,7 +1,7 @@
 import os, unittest, json, sqlite3
 from flask import Flask, jsonify, current_app
 import hmc, api_module
-from services import MovieManager
+from services import MovieManager, AssetManager
 from db import execute_sql, upgrade_db, get_db_version, create_db, query_db
 
 flask_app = Flask(__name__)
@@ -29,7 +29,8 @@ class HmcTestCase(unittest.TestCase):
             movie_file_exts = current_app.config['DEFAULT_MOVIE_FILE_EXTENSIONS']
             movie_share_path = current_app.config['MOVIE_SHARE_PATH']
             result = MovieManager().rescan(movies_path, movie_share_path, movie_file_exts, True, True)
-            assert result == self.MOVIES_FILE_COUNT
+            assert result == self.MOVIES_FILE_COUNT, 'actual: {0}, expected: {1}'.format(result, self.MOVIES_FILE_COUNT)
+            print('OK - test_rescan_movies')
 
     def test_api_movies(self):
         response = self.app.get('/api/movies')
@@ -71,6 +72,20 @@ class HmcTestCase(unittest.TestCase):
             actual_count = count - query_db(sql, one=True)['fcount']
             assert actual_count == expected_count, 'actual: {0}, expected: {1}'.format(actual_count, expected_count)
             print('OK - test_remove_duplicate_movies')
+
+    def test_get_files(self):
+        with flask_app.test_request_context():
+            expected_count = 3
+            movies_path = os.path.join(current_app.root_path, 'test-assets/test-get-files')
+            movie_share_path = current_app.config['MOVIE_SHARE_PATH']
+            movie_file_exts = current_app.config['DEFAULT_MOVIE_FILE_EXTENSIONS']
+            files = AssetManager().get_files(movies_path, movie_share_path, movie_file_exts, False)
+            count = 0
+            for f in files:
+                count = count + 1
+            assert count == expected_count, 'actual: {0}, expected: {1}'.format(count, expected_count)
+            print('OK - test_get_files')
+        # test-assets\test-get-files
             
 if __name__ == '__main__':
     unittest.main()

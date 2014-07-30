@@ -17,7 +17,9 @@ class AssetManager(object):
                 os.rename(os.path.join(path, dirname), os.path.join(path, new_dirname))
                 
     def get_files(self, path, movie_share_path, extensions=(), skip_if_notscan_file_exists = True):
-        result = []
+        """
+        Returns the files in the specified path.
+        """
         length = len(path)
         if movie_share_path[-1:] != '/':
             movie_share_path = movie_share_path + '/'
@@ -47,8 +49,7 @@ class AssetManager(object):
                     filename_with_path = movie_share_path + filename_with_path
                 filename_with_path = filename_with_path.replace('\\', '/')
                 fileinfo = dict(url=filename_with_path, filename=abs_file_name, info=json_file_info)
-                result.append(fileinfo)
-        return result
+                yield fileinfo
         
 
 class MovieManager(object):
