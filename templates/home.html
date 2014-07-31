@@ -5,13 +5,14 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home.css') }}">
 <script type="text/javascript" src="{{url_for('static', filename='hmc.home.js')}}"></script>
 {% endblock %}
+{% block header %}
+<p>Home Media Center!</p>
+{% endblock %}
 {% block content %}
-<div class="main">
-    <div class="container">
-        <p>Welcome!</p>
+<div class="home-body">
+    <div class="search-bar">
         <form action="{{url_for('movies.home')}}">
-            <label for="q">Search: </label>
-            <input type="text" id="q" name="q" />
+            <span><input type="text" id="q" name="q" /></span>
             <input type="submit" id="search" value="Search" />
         </form>
     </div>

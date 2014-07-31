@@ -13,7 +13,7 @@
     {% endblock %}
 </head>
 <body>
-    <div class="main">
+    <div class="container">
         <div id="menu">
             <span class="menu-header">HMC</span>
             <ul>
@@ -22,12 +22,17 @@
                 <li id="movies"><a href="{{url_for('movies.home')}}">Movies</a></li>
             </ul>
         </div>
-        <div class="content">
-            {% block content %}{% endblock %}
+        <div class="header">
+            {% block header %}{% endblock %}
         </div>
-    </div>
-    <div id="footer">
-        <span>Copyright &#169; by <a id="admin-switcher" href="#">Lei Xiao</a>. All Rights Reserved.</span>
+        <div class="content">
+            <div class="content-body">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        <div id="footer">
+            <span>Copyright &#169; by <a id="admin-switcher" href="#">Lei Xiao</a>. All Rights Reserved.</span>
+        </div>
     </div>
     <script type="text/javascript">
         $(function () { $('#admin-switcher').click(function () { HMC.Common.EnableAdminSwitcher('#menu'); }); });
