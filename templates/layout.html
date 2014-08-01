@@ -1,19 +1,20 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block head %}
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,300italic,100,100italic,300" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='hmc.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='grid.css') }}">
     <script type="text/javascript" src="{{url_for('static', filename='jquery-1.11.1.min.js')}}"></script>
     <script type="text/javascript" src="{{url_for('static', filename='hmc.js')}}"></script>
-    <title>{% block title %}{% endblock %} - HMC</title>
     {% endblock %}
+    <title>{% block title %}{% endblock %} - HMC</title>
 </head>
 <body>
-    <div class="container">
+    <div class="main">
         <div id="menu">
             <span class="menu-header">HMC</span>
             <ul>
@@ -23,7 +24,9 @@
             </ul>
         </div>
         <div class="header">
-            {% block header %}{% endblock %}
+            <div class="container">
+                {% block header %}{% endblock %}
+            </div>
         </div>
         <div class="content">
             <div class="content-body">

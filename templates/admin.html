@@ -3,19 +3,23 @@
 {% block head %}
   {{ super() }}
 {% endblock %}
+{% block header %}
+<h1>Welcome HMC admin console!</h1>
+{% endblock %}
 {% block content %}
-<p>Welcome HMC admin console!</p>
-<ul>
-    <li><a href="{{url_for('view.home')}}">Go to home page</a></li>
-    <li><a href="{{url_for('api.get_database_version')}}">Get database version</a></li>
-    <li><a href="{{url_for('api.init_db')}}">Create database</a></li>
-    <li><a href="{{url_for('api.upgrade_database')}}">Upgrade database</a></li>
-    <li><a href="{{url_for('api.rescan')}}">Rescan new movie files</a></li>
-    <li><a href="{{url_for('api.rescan', mode='force')}}">Force rescan all movie files</a></li>
-    <li><a href="{{url_for('api.remove_missing_movies', mode='force')}}">Remove file missing movies</a></li>
-    <li><a href="{{url_for('api.remove_duplicate_movies', mode='force')}}">Remove duplicate movies</a></li>
-    <li><a href="{{url_for('api.all_movies')}}">Get all movies</a></li>
-</ul>
+<div class="container">
+    <ul>
+        <li><a href="{{url_for('view.home')}}">Go to home page</a></li>
+        <li><a href="{{url_for('api.get_database_version')}}">Get database version</a></li>
+        <li><a href="{{url_for('api.init_db')}}">Create database</a></li>
+        <li><a href="{{url_for('api.upgrade_database')}}">Upgrade database</a></li>
+        <li><a href="{{url_for('api.rescan')}}">Rescan new movie files</a></li>
+        <li><a href="{{url_for('api.rescan', mode='force')}}">Force rescan all movie files</a></li>
+        <li><a href="{{url_for('api.remove_missing_movies', mode='force')}}">Remove file missing movies</a></li>
+        <li><a href="{{url_for('api.remove_duplicate_movies', mode='force')}}">Remove duplicate movies</a></li>
+        <li><a href="{{url_for('api.all_movies')}}">Get all movies</a></li>
+    </ul>
+</div>
 <script type="text/javascript">
     HMC.Common.ActiveMenuItem('#admin');
 </script>

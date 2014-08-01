@@ -2,15 +2,15 @@
 {% block title %}Home{% endblock %}
 {% block head %}
   {{ super() }}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='movies.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='movies.css') }}" >
 <script type="text/javascript" src="{{url_for('static', filename='hmc.home.js')}}"></script>
 {% endblock %}
 {% block header %}
 <p>Welcome to the movie center. There are {{total_count}} movies here. Input the query keywords to search the movie you want to watch.</p>
+{% include 'fragment-search-bar.html' %}
 {% endblock %}
 {% block content %}
 <div>
-    {% include 'fragment-search-bar.html' %}
     <div class="grid4">
         {% for movie in movies.result %}
         <div class="col">
