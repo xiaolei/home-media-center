@@ -10,12 +10,7 @@
 {% endblock %}
 {% block content %}
 <div>
-    <div class="search-bar">
-        <form action="{{url_for('movies.home')}}">
-            <span><input type="text" id="q" name="q" /></span>
-            <input type="submit" id="search" value="Search" />
-        </form>
-    </div>
+    {% include 'fragment-search-bar.html' %}
     <div class="grid4">
         {% for movie in movies.result %}
         <div class="col">

@@ -36,15 +36,17 @@
 
 #q {
     width: 100%;
-}
-
-.search-bar span {
-    display: table-cell;
-    width: 90%;
+    font-size: 1.2em;
 }
 
 .search-bar input[type=submit] {
     display: table-cell;
+    font-size: 1.2em;
+}
+
+.search-bar span {
+    display: table-cell;
+    width: 450px;
 }
 
 .header {
