@@ -76,6 +76,10 @@ class MovieManager(object):
                 movie = MovieInfoProvider().get_by_imdb_id(imdb_id)
                 if not movie:
                     continue
+                # Merge from local json file content
+                for k in movie.keys():
+                    if file['info'].has_key(k):
+                        movie[k] = file['info'][k]
                 # Download poster image to local with the same name as the movie file name.
                 if movie.has_key('poster_url'):
                     self.download_poster_file(movie['poster_url'], poster_filename)

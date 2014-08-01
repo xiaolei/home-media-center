@@ -35,8 +35,8 @@ class HmcTestCase(unittest.TestCase):
     def test_api_movies(self):
         response = self.app.get('/api/movies')
         assert response.status_code, 200
-        actual_result = json.loads(response.data)
-        assert len(actual_result['result']) == self.MOVIES_FILE_COUNT
+        actual_result = len(json.loads(response.data)['result'])
+        assert actual_result == self.MOVIES_FILE_COUNT, 'actual: {0}, expected: {1}'.format(actual_result, self.MOVIES_FILE_COUNT)
         print('OK - test_api_movies')
 
     def test_remove_all_missing_files_in_db(self):

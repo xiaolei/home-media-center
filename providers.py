@@ -90,6 +90,7 @@ class OmdbApi(MovieInfoProviderBase):
         result['language'] = self.get_value(raw_result, 'Language')
         result['year'] = self.get_value(raw_result, 'Year')
         result['type'] = self.get_value(raw_result, 'Type')
+        result['also_known_as'] = ''
         try:
             result['imdb_votes'] = int(self.get_value(raw_result, 'imdbVotes').replace(',',''))
             result['imdb_rating'] = float(self.get_value(raw_result, 'imdbRating'))
