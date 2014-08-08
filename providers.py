@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import sys
+import sys, json
 from urllib2 import Request, urlopen, URLError
 from urlparse import urlparse
-import json
+from common import trim_str
 
 class HttpClient(object):
     def get(self, url):
@@ -68,7 +68,7 @@ class MovieInfoProviderBase(object):
         return raw_result
 
     def get_value(self, raw_result, key, default_value=''):
-        return raw_result[key] if raw_result and key and raw_result.has_key(key) else default_value
+        return trim_str(raw_result[key]) if raw_result and key and raw_result.has_key(key) else default_value
 
 class OmdbApi(MovieInfoProviderBase):
     def transform(self, raw_result=dict()):

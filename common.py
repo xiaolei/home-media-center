@@ -30,3 +30,8 @@ def get_local_ip():
             except IOError:
                 pass
     return ip
+
+def trim_str(s):
+    if isinstance(s, basestring):
+        return s.strip()
+    return s

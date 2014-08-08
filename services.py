@@ -1,6 +1,7 @@
 import os, os.path, fnmatch, json, urllib
 from db import query_db, execute_sql
 from providers import MovieInfoProvider
+from common import trim_str
 
 DEFAULT_PAGE_SIZE = 16
 FILE_NAME_NOT_SCAN = '.notscan'
@@ -42,6 +43,9 @@ class AssetManager(object):
                         json_text = f.read()
                         if json_text:
                             json_file_info = json.loads(json_text)
+                            # Trim all string type values
+                            for k in json_file_info.keys():
+                                json_file_info[k] = trim_str(json_file_info[k])
                 filename_with_path = abs_file_name.replace(path, '')
                 if filename_with_path[0] == os.sep:
                     filename_with_path = movie_share_path + filename_with_path[1:]
@@ -79,7 +83,7 @@ class MovieManager(object):
                 # Merge from local json file content
                 for k in movie.keys():
                     if file['info'].has_key(k):
-                        movie[k] = file['info'][k]
+                        movie[k] = trim_str(file['info'][k])
                 # Download poster image to local with the same name as the movie file name.
                 if movie.has_key('poster_url'):
                     self.download_poster_file(movie['poster_url'], poster_filename)
