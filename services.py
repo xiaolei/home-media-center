@@ -67,6 +67,7 @@ class MovieManager(object):
         if refine_folder_names:
             assetManager.refine_folder_names(movies_path)
         files = assetManager.get_files(movies_path, movie_share_path, movie_file_exts, False if force_rescan_all else True)
+        imdb_id = ''
         for file in files:
             movie = dict()
             filename = file['filename']
@@ -93,6 +94,7 @@ class MovieManager(object):
             movie['poster_url'] = url[:-4] + '.jpg'
 
             sql = u'insert into movies({0}) values({1});'.format(', '.join(movie.keys()), ('?,'*len(movie.values()))[:-1])
+            execute_sql('delete from movies where imdb_id = ?', [imdb_id])
             execute_sql(sql, movie.values())
             result = result + 1
             
