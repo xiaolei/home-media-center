@@ -7,15 +7,34 @@ DEFAULT_PAGE_SIZE = 16
 FILE_NAME_NOT_SCAN = '.notscan'
 
 class AssetManager(object):
+    def renamedir(self, folder_path, replace_rules=[[' ', '.'], ['[', ''], [']', ''], ['(', ''], [')', '']]):
+        for sub_folder_name in os.listdir(folder_path):
+            subdir = os.path.join(folder_path, sub_folder_name)
+            if not os.path.isdir(subdir):
+                continue
+            self.renamedir(subdir, replace_rules)
+            for rule in replace_rules:
+                if len(rule) == 2 and rule[0] in sub_folder_name:
+                    new_sub_folder_name = sub_folder_name.replace(rule[0], rule[1])
+                    new_subdir = os.path.join(folder_path, new_sub_folder_name)
+                    os.rename(subdir, new_subdir)
+                    print(subdir + '=>' + new_subdir)
+
+    def renamedirs(self, folder_path, replace_rules=[[' ', '.'], ['[', ''], [']', ''], ['(', ''], [')', '']]):
+        if not os.path.isdir(folder_path):
+            return
+        (parent_path, current_folder_name) = os.path.split(folder_path)
+        new_folder_path = folder_path
+        for rule in replace_rules:
+            if len(rule) == 2 and rule[0] in current_folder_name:
+                new_folder_name = current_folder_name.replace(rule[0], rule[1])
+                new_folder_path = os.path.join(parent_path, new_folder_name)
+                os.rename(folder_path, new_folder_path)
+        self.renamedir(new_folder_path, replace_rules)
+        
     def refine_folder_names(self, path, replace_rules=[[' ', '_'], ['[', ''], [']', ''], ['(', ''], [')', '']]):
         if not path or not replace_rules or not os.path.isdir(path): pass
-        for dirname in os.listdir(path):
-            new_dirname = dirname
-            for rule in replace_rules:
-                if len(rule) == 2 and rule[0] in dirname:
-                    new_dirname = new_dirname.replace(rule[0], rule[1])
-            if new_dirname != dirname:
-                os.rename(os.path.join(path, dirname), os.path.join(path, new_dirname))
+        self.renamedirs(path, replace_rules)
                 
     def get_files(self, path, movie_share_path, extensions=(), skip_if_notscan_file_exists = True):
         """
